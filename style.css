@@ -1,0 +1,22 @@
+body {
+    font-family: 'Inter', sans-serif;
+    /* Update background to a slightly darker, more textured look */
+    background-color: #e5e7eb; /* Gray-200 */
+    
+    /* Custom geometric background pattern for visual interest */
+    background-image: radial-gradient(#d1d5db 1px, transparent 1px), radial-gradient(#d1d5db 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+/* Custom scrollbar for better code block aesthetics */
+pre::-webkit-scrollbar {
+    height: 8px;
+}
+pre::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 10px;
+}
+/* Ensure main content blocks stand out clearly against the pattern */
+section {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
