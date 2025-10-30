@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - 4x4 XOR Light Puzzle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Highlight.js for code formatting -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Update background to a slightly darker, more textured look */
+            background-color: #e5e7eb; /* Gray-200 */
+            
+            /* Custom geometric background pattern for visual interest */
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px), radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        /* Custom scrollbar for better code block aesthetics */
+        pre::-webkit-scrollbar {
+            height: 8px;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 10px;
+        }
+        /* Ensure main content blocks stand out clearly against the pattern */
+        section {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header / Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Your Name / Portfolio</h1>
+            <nav class="space-x-4">
+                <a href="#project" class="text-indigo-600 hover:text-indigo-800 font-medium transition duration-150 ease-in-out">Project</a>
+                <a href="#logic" class="text-gray-600 hover:text-indigo-600 transition duration-150 ease-in-out">Logic</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Project Introduction -->
+            <section id="project" class="mb-12 p-8 bg-white shadow-xl rounded-xl">
+                <span class="text-sm font-semibold text-indigo-500 uppercase">Arduino & Embedded Systems</span>
+                <h2 class="mt-2 text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+                    4x4 XOR Toggle Light Puzzle
+                </h2>
+                <p class="mt-4 text-xl text-gray-600 leading-relaxed">
+                    This project implements a classic "Lights Out" style puzzle on an Arduino, where the state of four LEDs is controlled by four buttons using **XOR (toggle) logic**. The challenge was ensuring the puzzle was always mathematically solvable regardless of the initial starting configuration.
+                </p>
+            </section>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                
+                <!-- Technical Deep Dive & Logic -->
+                <section id="logic" class="lg:col-span-2 p-8 bg-white shadow-xl rounded-xl">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-3">
+                        Technical Deep Dive: Bitwise XOR for State Management
+                    </h3>
+
+                    <p class="mb-4 text-gray-700">
+                        The core of the puzzle relies on the **Bitwise XOR operator (`^`)**. This operator allows us to efficiently toggle the state of specific LEDs (bits) in a single operation.
+                    </p>
+
+                    <h4 class="text-2xl font-semibold text-gray-800 mt-6 mb-3">
+                        The XOR Mechanism
+                    </h4>
+                    <ul class="list-disc list-inside space-y-2 ml-4 text-gray-700">
+                        <li>The entire puzzle state is held in one 4-bit integer, <code class="bg-gray-100 px-1 rounded">boardState</code> (range 0-15).</li>
+                        <li>Each button is assigned a unique **Pattern Mask** (e.g., <code class="bg-gray-100 px-1 rounded">MASK_B1</code>).</li>
+                        <li>When a button is pressed, the new state is calculated: <code class="bg-indigo-100 text-indigo-700 font-mono px-2 py-0.5 rounded-md">boardState = boardState ^ mask;</code></li>
+                        <li>If a bit in the mask is <code class="font-mono text-red-600">1</code>, the corresponding bit (LED) in the board state flips (0 becomes 1, 1 becomes 0).</li>
+                        <li>If a bit in the mask is <code class="font-mono text-green-600">0</code>, the corresponding LED is unaffected.</li>
+                    </ul>
+                    
+                    <h4 class="text-2xl font-semibold text-gray-800 mt-6 mb-3">
+                        Ensuring Solvability
+                    </h4>
+                    <p class="text-gray-700">
+                        The key challenge in these puzzles is choosing the right masks so that the resulting matrix of button operations is **invertible**. The following set of masks guarantees that any starting position can be solved (reduced to <code class="font-mono">WIN_STATE = 0</code>).
+                    </p>
+
+                    <!-- Mask Visualization Table -->
+                    <div class="mt-6 overflow-x-auto">
+                        <table class="w-full text-left rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                            <thead class="bg-indigo-600 text-white">
+                                <tr>
+                                    <th class="p-3">Button</th>
+                                    <th class="p-3">Decimal Mask</th>
+                                    <th class="p-3">Binary Mask (B4 B3 B2 B1)</th>
+                                    <th class="p-3">Toggles LEDs</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="bg-white hover:bg-indigo-50 transition duration-150">
+                                    <td class="p-3 font-mono">B1</td>
+                                    <td class="p-3 font-mono">14</td>
+                                    <td class="p-3 font-mono text-green-600">1110</td>
+                                    <td class="p-3">LEDs 4, 3, & 2</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-indigo-50 transition duration-150">
+                                    <td class="p-3 font-mono">B2</td>
+                                    <td class="p-3 font-mono">12</td>
+                                    <td class="p-3 font-mono text-green-600">1100</td>
+                                    <td class="p-3">LEDs 4 & 3</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-indigo-50 transition duration-150">
+                                    <td class="p-3 font-mono">B3</td>
+                                    <td class="p-3 font-mono">3</td>
+                                    <td class="p-3 font-mono text-green-600">0011</td>
+                                    <td class="p-3">LEDs 2 & 1</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-indigo-50 transition duration-150">
+                                    <td class="p-3 font-mono">B4</td>
+                                    <td class="p-3 font-mono">7</td>
+                                    <td class="p-3 font-mono text-green-600">0111</td>
+                                    <td class="p-3">LEDs 3, 2, & 1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Key Implementation Details -->
+                <section class="lg:col-span-1 p-6 bg-indigo-50 shadow-xl rounded-xl h-fit">
+                    <h4 class="text-2xl font-bold text-indigo-900 mb-4">Implementation Highlights</h4>
+                    <ul class="space-y-4 text-indigo-800">
+                        <li>
+                            <strong class="font-semibold">Debouncing:</strong> Utilized a debouncing function with a 50ms delay to prevent false button presses due to mechanical noise.
+                        </li>
+                        <li>
+                            <strong class="font-semibold">Random Start State:</strong> Used <code class="font-mono">randomSeed(analogRead(A0))</code> for robust, non-repeating puzzle starts.
+                        </li>
+                        <li>
+                            <strong class="font-semibold">Binary to Physical Output:</strong> The <code class="font-mono">updateLeds()</code> function uses bit shifting (<code class="font-mono">>></code>) and bitwise AND (<code class="font-mono">&</code>) to translate the single <code class="font-mono">boardState</code> integer into 4 separate <code class="font-mono">digitalWrite()</code> calls.
+                        </li>
+                        <li>
+                            <strong class="font-semibold">Win Animation:</strong> Upon reaching <code class="font-mono">boardState = 0</code>, a flash sequence (binary <code class="font-mono">1010</code> / <code class="font-mono">0101</code>) runs before the puzzle resets.
+                        </li>
+                    </ul>
+                </section>
+            </div>
+            
+            <!-- Arduino Code Snippet -->
+            <section class="mt-12 p-8 bg-gray-800 shadow-2xl rounded-xl">
+                <h3 class="text-3xl font-bold text-white mb-6">Arduino Code Excerpt</h3>
+                <pre class="rounded-lg overflow-x-auto p-4 bg-gray-900 shadow-inner">
+                    <code class="arduino">
+// --- Pattern Masks (GUARANTEED SOLVABLE SET) ---
+const int MASK_B1 = 14;  // Binary 1110 (Toggles LEDs 2, 3, & 4)
+const int MASK_B2 = 12;  // Binary 1100 (Toggles LEDs 3 & 4)
+const int MASK_B3 = 3;   // Binary 0011 (Toggles LEDs 1 & 2)
+const int MASK_B4 = 7;   // Binary 0111 (Toggles LEDs 1, 2, & 3)
+
+// --- State Management ---
+int boardState = 0; 
+const int WIN_STATE = 0; 
+
+// The critical function where the XOR logic is applied
+void handleButtonPress(int pin, int mask) {
+    // Debouncing logic...
+    // ...
+    if (buttonState[pinIndex] == HIGH) {
+        // Toggle the board state using XOR (^) and the button's mask
+        boardState = boardState ^ mask;
+        
+        Serial.print("New State (DEC): ");
+        Serial.println(boardState); 
+    }
+    // ...
+}
+
+// Translate the single integer state to physical LED pins
+void updateLeds() {
+  digitalWrite(ledPin1, (boardState >> 0) & 0x01); // LSB
+  digitalWrite(ledPin2, (boardState >> 1) & 0x01); 
+  digitalWrite(ledPin3, (boardState >> 2) & 0x01); 
+  digitalWrite(ledPin4, (boardState >> 3) & 0x01); // MSB
+}
+                    </code>
+                </pre>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 mt-8 py-6">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            &copy; 2024 Your Name. Built with curiosity and code.
+        </div>
+    </footer>
+
+    <!-- Initialize Highlight.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>
